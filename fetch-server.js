@@ -41,6 +41,24 @@ app.param('collectionName', function (req, res, next, collectionName) {
   return next();
 });
 
+app.get('/collections/:collectionName', function (req, res, next) {
+  req.collection.find({}).toArray(function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    res.send(results);
+  });
+});
+
+app.get('/collections/:collectionName', function (req, res, next) {
+  req.collection.find({}, { limit: 3, sort: [["price", -1]] }).toArray(function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    res.send(results);
+  });
+});
+
 app.get('/collections/:collectionName/:max/:sortAspect/:sortAscDesc', function (req, res, next) {
 
   var max = parseInt(req.params.max, 10); // base 10
@@ -59,18 +77,19 @@ app.get('/collections/:collectionName/:max/:sortAspect/:sortAscDesc', function (
   });
 });
 
-app.get('/', function (req, res, next) {
-  res.send('Select a collection, e.g., /collection/lessons')
-});
-
-app.get('/collections/:collectionName', function (req, res, next) {
-  req.collection.find({}).toArray(function (err, results) {
+app.get('/collections/:collectionName/:id', function (req, res, next) {
+  req.collection.findOne({ _id: new ObjectId(req.params.id) }, function (err, results) {
     if (err) {
       return next(err);
     }
     res.send(results);
   });
 });
+
+app.get('/', function (req, res, next) {
+  res.send('Select a collection, e.g., /collection/lessons')
+});
+
 
 app.post('/collections/:collectionName', function (req, res, next) {
   req.collection.insertOne(req.body, function (err, results) {
