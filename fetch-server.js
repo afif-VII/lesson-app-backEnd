@@ -41,6 +41,24 @@ app.param('collectionName', function (req, res, next, collectionName) {
   return next();
 });
 
+app.get('/collections/:collectionName/:max/:sortAspect/:sortAscDesc', function (req, res, next) {
+
+  var max = parseInt(req.params.max, 10); // base 10
+  let sortDirection = 1;
+  if (req.params.sortAscDesc === "desc") {
+    sortDirection = -1;
+  }
+  req.collection.find({}, {
+    limit: max, sort: [[req.params.sortAspect,
+      sortDirection]]
+  }).toArray(function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    res.send(results);
+  });
+});
+
 app.get('/', function (req, res, next) {
   res.send('Select a collection, e.g., /collection/lessons')
 });
