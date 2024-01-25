@@ -129,6 +129,7 @@ app.use(function(req, res) {
   res.status(404).send("Resource not found");
 });
 
-app.listen(3000, function() {
+const port = process.env.PORT || 3000; ß
+app.listen(port, function () {
   console.log("App started on port 3000");
 });
