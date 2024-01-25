@@ -13,13 +13,6 @@ let propertiesReader = require("properties-reader");
 let propertiesPath = path.resolve(__dirname, "conf/db.properties");
 let properties = propertiesReader(propertiesPath);
 
-console.log("db.prefix:", properties.get("db.prefix"));
-console.log("db.user:", properties.get("db.user"));
-console.log("db.pwd:", properties.get("db.pwd"));
-console.log("dbName:", properties.get("db.dbName"));
-console.log("db.dbUrl:", properties.get("db.dbUrl"));
-console.log("db.params:", properties.get("db.params"));
-
 let dbPprefix = properties.get("db.prefix");
 let dbUsername = encodeURIComponent(properties.get("db.user"));
 let dbPwd = encodeURIComponent(properties.get("db.pwd"));
