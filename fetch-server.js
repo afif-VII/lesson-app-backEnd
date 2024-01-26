@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const path = require("path");
+const morgan = require("morgan");
 
 let app = express();
 app.set('json spaces', 3);
@@ -28,6 +29,8 @@ let db = client.db(dbName);
 
 // middleware
 app.use(express.json());
+
+app.use(morgan('dev'));
 
 app.param('collectionName', function (req, res, next, collectionName) {
   req.collection = db.collection(collectionName);
