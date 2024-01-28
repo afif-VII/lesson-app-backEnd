@@ -27,7 +27,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
 let db = client.db(dbName);
 
-const imagesPath = path.resolve(__dirname, 'lesson-booking-app/images');
+const imagesPath = path.join(__dirname, '../lesson-booking-app/images');
 app.use("/images", express.static(imagesPath));
 
 // middleware
