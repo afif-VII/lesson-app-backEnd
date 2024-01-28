@@ -28,9 +28,19 @@ const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
 let db = client.db(dbName);
 
 const imagesPath = path.join(__dirname, '../lesson-booking-app/images');
-app.use("/images", express.static(imagesPath));
 
-// middleware
+app.use("/images", (req, res, next) => {
+  const imagePath = path.join(imagesPath, req.path);
+  
+  fs.access(imagePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      res.status(404).send('Image not found');
+    } else {
+      res.sendFile(imagePath);
+    }
+  });
+}); 
+
 app.use(express.json());
 
 app.use(morgan('dev'));
