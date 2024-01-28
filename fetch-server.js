@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const morgan = require("morgan");
+app.use(express.json());
+app.use(morgan('dev'));
 
 let app = express();
 app.set('json spaces', 3);
@@ -27,17 +29,19 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
 let db = client.db(dbName);
 
-const imagesPath = path.resolve(__dirname, '/lesson-booking-app/images');
+const imagesPath = path.resolve(__dirname, 'lesson-booking-app/images');
 app.use("/images", express.static(imagesPath));
 
 // middleware
-app.use(express.json());
 
-app.use(morgan('dev'));
 
 app.param('collectionName', function (req, res, next, collectionName) {
   req.collection = db.collection(collectionName);
   return next();
+});
+
+app.get('/', function (req, res, next) {
+  res.send('Select a collection, e.g., /collections/lessons');
 });
 
 app.get('/search', function (req, res, next) {
