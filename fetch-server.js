@@ -27,6 +27,9 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
 let db = client.db(dbName);
 
+const imagesPath = path.resolve(__dirname, '/lesson-booking-app/images');
+app.use("/images", express.static(imagesPath));
+
 // middleware
 app.use(express.json());
 
@@ -35,6 +38,23 @@ app.use(morgan('dev'));
 app.param('collectionName', function (req, res, next, collectionName) {
   req.collection = db.collection(collectionName);
   return next();
+});
+
+app.get('/search', function (req, res, next) {
+  let searchTerm = req.query.q; // Get the search term from the query parameter
+  let regex = new RegExp(searchTerm, 'i'); // Create a case-insensitive regular expression
+
+  req.collection.find({
+    $or: [
+      { subject: regex },
+      { location: regex },
+    ],
+  }).toArray(function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    res.send(results);
+  });
 });
 
 app.get('/collections/:collectionName', function (req, res, next) {
@@ -82,12 +102,17 @@ app.get('/collections/:collectionName/:id', function (req, res, next) {
   });
 });
 
-app.get('/', function (req, res, next) {
-  res.send('Select a collection, e.g., /collection/lessons')
-});
-
 
 app.post('/collections/:collectionName', function (req, res, next) {
+  req.collection.insertOne(req.body, function (err, results) {
+    if (err) {
+      return next(err);
+    }
+    res.send(results);
+  });
+});
+
+app.post('/collections/:orders', function (req, res, next) {
   req.collection.insertOne(req.body, function (err, results) {
     if (err) {
       return next(err);
@@ -123,6 +148,10 @@ app.put('/collections/:collectionName/:id', function (req, res, next) {
 
 app.use(function(req, res) {
   res.status(404).send("Resource not found");
+});
+
+app.use('/images', (req, res, next) => {
+  res.status(404).send('Image not found');
 });
 
 const port = process.env.PORT || 3000;
