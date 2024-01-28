@@ -2,8 +2,6 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 const morgan = require("morgan");
-app.use(express.json());
-app.use(morgan('dev'));
 
 let app = express();
 app.set('json spaces', 3);
@@ -33,7 +31,9 @@ const imagesPath = path.resolve(__dirname, 'lesson-booking-app/images');
 app.use("/images", express.static(imagesPath));
 
 // middleware
+app.use(express.json());
 
+app.use(morgan('dev'));
 
 app.param('collectionName', function (req, res, next, collectionName) {
   req.collection = db.collection(collectionName);
