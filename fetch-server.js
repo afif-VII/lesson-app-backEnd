@@ -45,8 +45,8 @@ app.get('/', function (req, res, next) {
 });
 
 app.get('/search', function (req, res, next) {
-  let searchTerm = req.query.q; // Get the search term from the query parameter
-  let regex = new RegExp(searchTerm, 'i'); // Create a case-insensitive regular expression
+  let searchTerm = req.query.q; 
+  let regex = new RegExp(searchTerm, 'i'); 
 
   req.collection.find({
     $or: [
@@ -81,7 +81,7 @@ app.get('/collections/:collectionName', function (req, res, next) {
 
 app.get('/collections/:collectionName/:max/:sortAspect/:sortAscDesc', function (req, res, next) {
 
-  var max = parseInt(req.params.max, 10); // base 10
+  var max = parseInt(req.params.max, 10); 
   let sortDirection = 1;
   if (req.params.sortAscDesc === "desc") {
     sortDirection = -1;
