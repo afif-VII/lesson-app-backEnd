@@ -29,19 +29,7 @@ const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const client = new MongoClient(uri, { serverApi: ServerApiVersion.v1 });
 let db = client.db(dbName);
 
-const imagesPath = path.join(__dirname, 'lesson-booking-app', 'images');
 
-app.use("/images", (req, res, next) => {
-  const imagePath = path.join(imagesPath, req.path);
-  
-  fs.access(imagePath, fs.constants.F_OK, (err) => {
-    if (err) {
-      res.status(404).send('Image not found');
-    } else {
-      res.sendFile(imagePath);
-    }
-  });
-}); 
 
 app.use(express.json());
 
@@ -161,6 +149,20 @@ app.put('/collections/:collectionName/:id', function (req, res, next) {
     }
   );
 });
+
+const imagesPath = path.join(__dirname, 'lesson-booking-app', 'images');
+
+app.use("/images", (req, res, next) => {
+  const imagePath = path.join(imagesPath, req.path);
+  
+  fs.access(imagePath, fs.constants.F_OK, (err) => {
+    if (err) {
+      res.status(404).send('Image not found');
+    } else {
+      res.sendFile(imagePath);
+    }
+  });
+}); 
 
 app.use(function(req, res) {
   res.status(404).send("Resource not found");
